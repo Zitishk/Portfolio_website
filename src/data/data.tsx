@@ -74,7 +74,7 @@ export const heroData: Hero = {
   ),
   actions: [
     {
-      href: '/assets/resume.pdf',
+      href: '/assets/Resume.pdf',
       text: 'Resume',
       primary: true,
       Icon: ArrowDownTrayIcon,
@@ -316,5 +316,5 @@ export const contact: ContactSection = {
 export const socialLinks: Social[] = [
   {label: 'Github', Icon: GithubIcon, href: 'https://github.com/Zitishk'},
   {label: 'LinkedIn', Icon: LinkedInIcon, href: 'https://www.linkedin.com/in/kshitizudainiya/'},
-  {label: 'Resume', Icon:ArrowDownTrayIcon, href: '/assets/resume.pdf'}
+  {label: 'Resume', Icon:ArrowDownTrayIcon, href: '/assets/Resume.pdf'}
 ];

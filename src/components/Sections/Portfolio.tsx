@@ -1,24 +1,28 @@
 import {ArrowTopRightOnSquareIcon} from '@heroicons/react/24/outline';
 import classNames from 'classnames';
+import type {StaticImageData} from 'next/image';
 import Image from 'next/image';
-import {FC, memo, MouseEvent, useCallback, useEffect, useRef, useState, useMemo} from 'react';
+import {FC, memo, MouseEvent, useCallback, useEffect, useMemo,useRef, useState} from 'react';
 
 import {isMobile} from '../../config';
 import {portfolioItems, SectionId} from '../../data/data';
 import {PortfolioItem} from '../../data/dataDef';
 import useDetectOutsideClick from '../../hooks/useDetectOutsideClick';
-import Section from '../Layout/Section';
 import testimonialBg from '../../images/testimonial.webp';
+import Section from '../Layout/Section';
 
 const Portfolio: FC = memo(() => {
   const [parallaxEnabled, setParallaxEnabled] = useState(false);
   useEffect(() => setParallaxEnabled(true), []);
 
   // Resolve image source for background
-  const imageSrc = useMemo(() => {
-    return testimonialBg ? (typeof testimonialBg === 'string' ? testimonialBg : testimonialBg.src) : undefined;
-  }, []);
-
+  const imageSrc = useMemo(() => (
+    testimonialBg
+      ? typeof testimonialBg === 'string'
+        ? testimonialBg
+        : (testimonialBg as StaticImageData).src
+      : undefined
+  ), []);
   return (
     <Section className="bg-neutral-800" sectionId={SectionId.Portfolio}>
       <div className="relative overflow-hidden">
@@ -28,7 +32,7 @@ const Portfolio: FC = memo(() => {
             'absolute inset-0 bg-cover bg-center',
             parallaxEnabled && 'bg-fixed'
           )}
-          style={imageSrc ? { backgroundImage: `url(${imageSrc})` } : undefined}
+          style={imageSrc ? {backgroundImage: `url(${imageSrc})`} : undefined}
         />
 
         {/* Content overlay */}
@@ -36,7 +40,7 @@ const Portfolio: FC = memo(() => {
           <h2 className="self-center text-xl font-bold text-white">Check out some of my work</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
             {portfolioItems.map((item, index) => {
-              const { title, image, url, description } = item;
+              const {title, image} = item;
               return (
                 <div className="pb-6" key={`${title}-${index}`}>  
                   <div
@@ -84,7 +88,7 @@ const ItemOverlay: FC<{item: PortfolioItem}> = memo(({item: {url, title, descrip
     <a
       className={classNames(
         'absolute inset-0 flex items-center justify-center bg-black/60 transition-opacity',
-        { 'opacity-0 hover:opacity-100': !mobile || showOverlay, 'opacity-100': showOverlay }
+        {'opacity-0 hover:opacity-100': !mobile || showOverlay, 'opacity-100': showOverlay}
       )}
       href={url}
       onClick={handleItemClick}
