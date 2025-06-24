@@ -20,12 +20,10 @@ const Footer: FC = memo(() => (
         <Socials />
       </div>
       <a
-        className="-m-2 flex items-center gap-x-1 rounded-md p-2 ring-yellow focus:outline-none focus:ring-2"
+        className="-m-2 flex items-center gap-x-1 rounded-md p-2 focus:outline-none"
         href="https://reactresume.com">
-        <BoltIcon className="h-5 w-5 text-yellow" />
         <span>
-          Provided by <span className="text-white">React</span>
-          <span className="italic text-yellow">Resume</span>
+          Provided by React Resume
         </span>
       </a>
       <span className="text-sm text-neutral-700">© Copyright {currentYear} Tim Baker</span>

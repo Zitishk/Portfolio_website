@@ -1,34 +1,56 @@
 import {ArrowTopRightOnSquareIcon} from '@heroicons/react/24/outline';
 import classNames from 'classnames';
 import Image from 'next/image';
-import {FC, memo, MouseEvent, useCallback, useEffect, useRef, useState} from 'react';
+import {FC, memo, MouseEvent, useCallback, useEffect, useRef, useState, useMemo} from 'react';
 
 import {isMobile} from '../../config';
 import {portfolioItems, SectionId} from '../../data/data';
 import {PortfolioItem} from '../../data/dataDef';
 import useDetectOutsideClick from '../../hooks/useDetectOutsideClick';
 import Section from '../Layout/Section';
+import testimonialBg from '../../images/testimonial.webp';
 
 const Portfolio: FC = memo(() => {
+  const [parallaxEnabled, setParallaxEnabled] = useState(false);
+  useEffect(() => setParallaxEnabled(true), []);
+
+  // Resolve image source for background
+  const imageSrc = useMemo(() => {
+    return testimonialBg ? (typeof testimonialBg === 'string' ? testimonialBg : testimonialBg.src) : undefined;
+  }, []);
+
   return (
     <Section className="bg-neutral-800" sectionId={SectionId.Portfolio}>
-      <div className="flex flex-col gap-y-8">
-        <h2 className="self-center text-xl font-bold text-white">Check out some of my work</h2>
-        <div className=" w-full columns-2 md:columns-3 lg:columns-4">
-          {portfolioItems.map((item, index) => {
-            const {title, image} = item;
-            return (
-              <div className="pb-6" key={`${title}-${index}`}>
-                <div
-                  className={classNames(
-                    'relative h-max w-full overflow-hidden rounded-lg shadow-lg shadow-black/30 lg:shadow-xl',
-                  )}>
-                  <Image alt={title} className="h-full w-full" placeholder="blur" src={image} />
-                  <ItemOverlay item={item} />
+      <div className="relative overflow-hidden">
+        {/* Parallax background layer */}
+        <div
+          className={classNames(
+            'absolute inset-0 bg-cover bg-center',
+            parallaxEnabled && 'bg-fixed'
+          )}
+          style={imageSrc ? { backgroundImage: `url(${imageSrc})` } : undefined}
+        />
+
+        {/* Content overlay */}
+        <div className="relative z-10 flex flex-col gap-y-8 px-4 py-16 md:py-24 lg:px-8">
+          <h2 className="self-center text-xl font-bold text-white">Check out some of my work</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
+            {portfolioItems.map((item, index) => {
+              const { title, image, url, description } = item;
+              return (
+                <div className="pb-6" key={`${title}-${index}`}>  
+                  <div
+                    className={classNames(
+                      'relative h-max w-full overflow-hidden rounded-lg shadow-lg shadow-black/30 lg:shadow-xl'
+                    )}
+                  >
+                    <Image alt={title} className="h-full w-full object-cover" src={image} />
+                    <ItemOverlay item={item} />
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
     </Section>
@@ -44,10 +66,7 @@ const ItemOverlay: FC<{item: PortfolioItem}> = memo(({item: {url, title, descrip
   const linkRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
-    // Avoid hydration styling errors by setting mobile in useEffect
-    if (isMobile) {
-      setMobile(true);
-    }
+    if (isMobile) setMobile(true);
   }, []);
   useDetectOutsideClick(linkRef, () => setShowOverlay(false));
 
@@ -64,14 +83,14 @@ const ItemOverlay: FC<{item: PortfolioItem}> = memo(({item: {url, title, descrip
   return (
     <a
       className={classNames(
-        'absolute inset-0 h-full w-full  bg-gray-900 transition-all duration-300',
-        {'opacity-0 hover:opacity-80': !mobile},
-        showOverlay ? 'opacity-80' : 'opacity-0',
+        'absolute inset-0 flex items-center justify-center bg-black/60 transition-opacity',
+        { 'opacity-0 hover:opacity-100': !mobile || showOverlay, 'opacity-100': showOverlay }
       )}
       href={url}
       onClick={handleItemClick}
       ref={linkRef}
-      target="_blank">
+      target="_blank"
+    >
       <div className="relative h-full w-full p-4">
         <div className="flex h-full w-full flex-col gap-y-2 overflow-y-auto overscroll-contain">
           <h2 className="text-center font-bold text-white opacity-100">{title}</h2>
