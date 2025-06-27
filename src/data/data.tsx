@@ -294,7 +294,7 @@ export const contact: ContactSection = {
     },
     {
       type: ContactType.Location,
-      text: '8150 Baltimore Ave, #211-C',
+      text: '8150 Baltimore Ave',
       href: 'https://maps.app.goo.gl/oQtHTUT381KwRRC38',
     },
     {
